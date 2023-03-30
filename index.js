@@ -15,10 +15,25 @@
         + It should return a string with `name` and `age`. Example: "Mary, 50"
 */
 
-function Person() {
-
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+  this.stomach = [];
 }
 
+Person.prototype.eat = function(food) {
+  if (this.stomach.length < 10) {
+    this.stomach.push(food);
+  }
+};
+
+Person.prototype.poop = function() {
+  this.stomach = [];
+};
+
+Person.prototype.toString = function() {
+  return this.name + ', ' + this.age;
+};
 
 /*
   TASK 2
@@ -36,9 +51,29 @@ function Person() {
         + The `drive` method should return a string "I ran out of fuel at x miles!" x being `odometer`.
 */
 
-function Car() {
-
+function Car(model, milesPerGallon) {
+  this.model = model;
+  this.milesPerGallon = milesPerGallon;
+  this.tank = 0;
+  this.odometer = 0;
 }
+
+Car.prototype.fill = function(gallons) {
+  this.tank += gallons;
+};
+
+Car.prototype.drive = function(distance) {
+  const fuelNeeded = distance / this.milesPerGallon;
+
+  if (fuelNeeded > this.tank) {
+    this.odometer += this.tank * this.milesPerGallon;
+    this.tank = 0;
+    return `I ran out of fuel at ${this.odometer} miles!`;
+  }
+
+  this.odometer += distance;
+  this.tank -= fuelNeeded;
+};
 
 
 /*
@@ -49,18 +84,25 @@ function Car() {
         + Should return a string "Playing with x", x being the favorite toy.
 */
 
-function Baby() {
-
+function Baby(name, age, favoriteToy) {
+  Person.call(this, name, age);
+  this.favoriteToy = favoriteToy;
 }
 
+Baby.prototype = Object.create(Person.prototype);
+Baby.prototype.constructor = Baby;
+
+Baby.prototype.play = function () {
+  return "Playing with " + this.favoriteToy;
+}
 
 /* 
   TASK 4
   In your own words explain the four principles for the "this" keyword below:
-  1. 
-  2. 
-  3. 
-  4. 
+  1. Implicit Binding: When a function is called with a context object, "this" refers to that object. For example, when a method is called on an object, "this" refers to the object.
+  2. Explicit Binding: When the call, apply, or bind method is used, "this" is explicitly set to the first argument of the method.
+  3. New Binding: When a constructor function is used, "this" refers to the newly created object.
+  4. Window Binding: When "this" is used in the global scope, it refers to the window object in the browser or global object in Node.js. However, when using strict mode, "this" is undefined in the global scope.
 */
 
 ///////// END OF CHALLENGE /////////
